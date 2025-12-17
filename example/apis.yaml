@@ -1,0 +1,14 @@
+user:
+  sign-in:
+    method: 'post'
+    body:
+      email: 'gt=0,lte=50'
+      password: 'gt=8,lte=200'
+
+  sign-up:
+    method: 'post'
+    body:
+
+  log-out:
+    method: 'post'
+    custom: true
