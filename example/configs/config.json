@@ -1,0 +1,16 @@
+{
+  "server_config": {
+    "port": "8080"
+  },
+  "db_config": {
+    "driver": "postgres",
+    "host": "localhost",
+    "port": "5433",
+    "ssl_mode": "disable",
+    "user": "postgres",
+    "db_name": "postgres",
+    "password": "postgres"
+  },
+  "ssl_mode": false,
+  "jwt_token_salt": "asdf"
+}

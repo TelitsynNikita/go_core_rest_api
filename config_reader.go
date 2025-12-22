@@ -1,10 +1,33 @@
 package go_core_rest_api
 
-type Config struct{}
+import (
+	"encoding/json"
+	"os"
+)
 
-func NewConfig() *Config {
-	return &Config{}
+type Config struct {
+	ServerConfig struct {
+		Port string `json:"port"`
+	} `json:"server_config"`
+	DBConfig     DBConfig `json:"db_config"`
+	SSLMode      bool     `json:"ssl_mode"`
+	JWTTokenSalt string   `json:"jwt_token_salt"`
 }
 
-func (c *Config) ReadConfig() {
+func NewConfig() Config {
+	return Config{}
+}
+
+func (c *Config) ReadConfig() error {
+	config, err := os.ReadFile("./configs/config.json")
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(config, &c)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -9,9 +9,11 @@ import (
 )
 
 type ApiSettings struct {
-	Body   map[string]string `yaml:"body"`
-	Custom bool              `yaml:"custom"`
-	Method string            `yaml:"method"`
+	Body        map[string]map[string]string `yaml:"body"`
+	IsSlice     bool                         `yaml:"is_slice"`
+	Custom      bool                         `yaml:"custom"`
+	Method      string                       `yaml:"method"`
+	SQLFunction string                       `yaml:"sql_function"`
 }
 
 func ReadApisYaml() (map[string]map[string]ApiSettings, error) {

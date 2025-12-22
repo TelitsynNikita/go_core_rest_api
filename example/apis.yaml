@@ -1,14 +1,39 @@
 user:
   sign-in:
-    method: 'post'
+    method: post
+    sql_function: "get_users"
     body:
-      email: 'gt=0,lte=50'
-      password: 'gt=8,lte=200'
 
   sign-up:
-    method: 'post'
+    method: post
+    sql_function: "get_users"
     body:
+      name:
+        type: string
+        tag: 'required,gt=0,lte=50'
+      surname:
+        type: string
+        tag: 'required,gt=0,lte=50'
+      age:
+        type: int64
+        tag: 'required,gt=0,lte=150'
+      email:
+        type: string
+        tag: 'required,gt=3,lte=50'
+      password:
+        type: string
+        tag: 'required,gt=8,lte=200'
 
   log-out:
-    method: 'post'
+    method: post
     custom: true
+
+  test:
+    method: post
+    is_slice: true
+    sql_function: ""
+    body:
+      name:
+        type: string
+        is_slice: true
+        tag: 'required,gt=1,lte=50'
