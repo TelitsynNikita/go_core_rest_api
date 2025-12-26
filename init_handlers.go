@@ -8,12 +8,17 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 )
 
 func InitServerApp(groups map[string]map[string]ApiSettings, config Config, db *Database) *fiber.App {
 	app := fiber.New()
+	app.Use(logger.New())
+	app.Use(cors.New())
+
 	for groupName, group := range groups {
 		apiGroup := app.Group(groupName)
 

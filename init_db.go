@@ -43,7 +43,6 @@ func (db *Database) SelectFunction(functionName string, body []byte) (interface{
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
 
 	var result []byte
 	var query string
@@ -52,31 +51,31 @@ func (db *Database) SelectFunction(functionName string, body []byte) (interface{
 		query = fmt.Sprintf("SELECT %s()", functionName)
 		row := db.sqlx.QueryRow(query)
 		if row.Err() != nil {
-			return nil, err
+			return nil, tx.Rollback()
 		}
 
 		err = row.Scan(&result)
 		if err != nil {
-			return nil, err
+			return nil, tx.Rollback()
 		}
 	} else {
 		query = fmt.Sprintf("SELECT %s($1)", functionName)
 		row := db.sqlx.QueryRow(query, string(body))
 		if row.Err() != nil {
-			return nil, err
+			return nil, tx.Rollback()
 		}
 
 		err = row.Scan(&result)
 		if err != nil {
-			return nil, err
+			return nil, tx.Rollback()
 		}
 	}
 
-	var something interface{}
-	err = json.Unmarshal(result, &something)
+	var bodyJson interface{}
+	err = json.Unmarshal(result, &bodyJson)
 	if err != nil {
-		return nil, err
+		return nil, tx.Rollback()
 	}
 
-	return something, nil
+	return bodyJson, nil
 }

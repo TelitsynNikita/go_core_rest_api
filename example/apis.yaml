@@ -1,8 +1,19 @@
 user:
-  sign-in:
+  get-users:
     method: post
     sql_function: "get_users"
     body:
+
+    create-user:
+      method: post
+      sql_function: "create_user"
+      body:
+        email:
+          type: string
+          tag: 'required,gt=3,lte=50'
+        password:
+          type: string
+          tag: 'required,gt=8,lte=200'
 
   sign-up:
     method: post
