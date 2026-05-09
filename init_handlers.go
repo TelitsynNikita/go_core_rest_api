@@ -43,9 +43,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			return c.JSON(fiber.Map{
-				"res": result,
-			})
+			return c.JSON(result)
 		})
 	} else if strings.ToLower(apiSetting.Method) == strings.ToLower(fiber.MethodPost) {
 		apiGroup.Post(url, func(c *fiber.Ctx) error {
