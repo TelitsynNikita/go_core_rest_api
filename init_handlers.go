@@ -191,13 +191,80 @@ func parseBody(bodySettings map[string]map[string]string, bodyBytes []byte, isSl
 		// Создаем экземпляр новой структуры
 		extendedValue := reflect.New(extendedType).Elem()
 
+		fmt.Println(extendedValue)
+
 		for key, value := range unmarshalledBody {
 			fieldOfCustomStructValue := extendedValue.FieldByName(strings.ToUpper(key[:1]) + key[1:])
 			if fieldOfCustomStructValue.IsValid() {
 				if fieldOfCustomStructValue.Type() == reflect.TypeOf(value) {
 					fieldOfCustomStructValue.Set(reflect.ValueOf(value))
 				} else {
-					return nil, fmt.Errorf("wrong type for field %s value: %v", key, value)
+					switch fieldOfCustomStructValue.Kind() {
+					case reflect.String:
+						fieldOfCustomStructValue.Set(reflect.ValueOf(fmt.Sprintf("%v", value)))
+					case reflect.Int:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int(value.(float32))))
+						}
+					case reflect.Int64:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int64(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int64(value.(float32))))
+						}
+					case reflect.Int32:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int32(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int32(value.(float32))))
+						}
+					case reflect.Int16:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int16(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int16(value.(float32))))
+						}
+					case reflect.Int8:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int8(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(int8(value.(float32))))
+						}
+					case reflect.Uint:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint(value.(float32))))
+						}
+					case reflect.Uint64:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint64(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint64(value.(float32))))
+						}
+					case reflect.Uint32:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint32(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint32(value.(float32))))
+						}
+					case reflect.Uint16:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint16(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint16(value.(float32))))
+						}
+					case reflect.Uint8:
+						if reflect.TypeOf(value).Kind() == reflect.Float64 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint8(value.(float64))))
+						} else if reflect.TypeOf(value).Kind() == reflect.Float32 {
+							fieldOfCustomStructValue.Set(reflect.ValueOf(uint8(value.(float32))))
+						}
+					default:
+						return nil, fmt.Errorf("wrong type for field %s value: %v", key, value)
+					}
 				}
 			} else {
 				return nil, fmt.Errorf("there's no field: %s", key)
@@ -209,11 +276,11 @@ func parseBody(bodySettings map[string]map[string]string, bodyBytes []byte, isSl
 			return nil, err
 		}
 
-		bodyBytes, err = json.Marshal(extendedValue.Interface())
+		extendedBodyBytes, err := json.Marshal(extendedValue.Interface())
 		if err != nil {
 			return nil, err
 		}
 
-		return bodyBytes, nil
+		return extendedBodyBytes, nil
 	}
 }
