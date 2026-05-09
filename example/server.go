@@ -11,6 +11,10 @@ func main() {
 
 	apiService.InitApiService()
 
+	apiService.InitCustomHandler("TestFunction", func(db *go_core_rest_api.Database) {
+		
+	})
+
 	if err := apiService.RunService(); err != nil {
 		fmt.Println(err)
 	}

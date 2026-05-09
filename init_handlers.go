@@ -23,7 +23,11 @@ func InitServerApp(groups map[string]map[string]ApiSettings, config Config, db *
 		apiGroup := app.Group(groupName)
 
 		for url, api := range group {
-			makeHandler(url, api, apiGroup, db)
+			if strings.ToLower(group[url].Type) == "custom" {
+
+			} else {
+				makeHandler(url, api, apiGroup, db)
+			}
 		}
 	}
 
@@ -33,13 +37,7 @@ func InitServerApp(groups map[string]map[string]ApiSettings, config Config, db *
 func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *Database) {
 	if strings.ToLower(apiSetting.Method) == strings.ToLower(fiber.MethodGet) {
 		apiGroup.Get(url, func(c *fiber.Ctx) error {
-			body, err := parseBody(apiSetting.Body, c.Body(), apiSetting.IsSlice)
-			if err != nil {
-				logrus.Error(err)
-				return err
-			}
-
-			result, err := db.SelectFunction(apiSetting.SQLFunction, body)
+			result, err := db.SelectFunction(apiSetting.Call, nil)
 			if err != nil {
 				logrus.Error(err)
 				return err
@@ -57,7 +55,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			result, err := db.SelectFunction(apiSetting.SQLFunction, body)
+			result, err := db.SelectFunction(apiSetting.Call, body)
 			if err != nil {
 				logrus.Error(err)
 				return err
@@ -71,6 +69,10 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 }
 
 func parseBody(bodySettings map[string]map[string]string, bodyBytes []byte, isSlice bool) ([]byte, error) {
+	if len(bodySettings) == 0 {
+		return bodyBytes, nil
+	}
+
 	if len(bodyBytes) == 0 {
 		return nil, nil
 	}

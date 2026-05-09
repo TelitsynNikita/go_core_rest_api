@@ -11,47 +11,26 @@ type ApiService struct {
 	YamlConfig map[string]map[string]ApiSettings
 	Server     *fiber.App
 	Config
-	DB Database
+	DB             Database
+	CustomHandlers map[string]fiber.Handler
 }
 
 func NewApiService() *ApiService {
 	return &ApiService{}
 }
 
+func (a *ApiService) InitCustomHandler(key string, fn func(db *Database)) {
+
+}
+
 func (a *ApiService) InitApiService() {
-	var (
-		configSignal   = make(chan struct{})
-		apisYamlSignal = make(chan struct{})
-		dbInitSignal   = make(chan struct{})
-		serverSignal   = make(chan struct{})
-	)
-	go func() {
-		a.initConfigs()
-		configSignal <- struct{}{}
-	}()
-
-	go func() {
-		<-configSignal
-		a.initApisYaml()
-		apisYamlSignal <- struct{}{}
-	}()
-
-	go func() {
-		<-apisYamlSignal
-		a.initDB(a.Config.DBConfig)
-		dbInitSignal <- struct{}{}
-	}()
-
-	go func() {
-		<-dbInitSignal
-		a.initServer(&a.DB)
-		serverSignal <- struct{}{}
-	}()
-
-	<-serverSignal
+	a.initConfigs()
+	a.initApisYaml()
+	a.initDB(a.Config.DBConfig)
 }
 
 func (a *ApiService) RunService() error {
+	a.initServer(&a.DB)
 	return a.Server.Listen(fmt.Sprintf(":%s", a.Config.ServerConfig.Port))
 }
 

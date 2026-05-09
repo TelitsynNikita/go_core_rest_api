@@ -1,11 +1,11 @@
 {
   "server_config": {
-    "port": "8080"
+    "port": "8081"
   },
   "db_config": {
     "driver": "postgres",
     "host": "localhost",
-    "port": "5433",
+    "port": "5434",
     "ssl_mode": "disable",
     "user": "postgres",
     "db_name": "postgres",

@@ -4,16 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
 
 type ApiSettings struct {
-	Body        map[string]map[string]string `yaml:"body"`
-	IsSlice     bool                         `yaml:"is_slice"`
-	Custom      bool                         `yaml:"custom"`
-	Method      string                       `yaml:"method"`
-	SQLFunction string                       `yaml:"sql_function"`
+	Body    map[string]map[string]string `yaml:"body"`
+	IsSlice bool                         `yaml:"is_slice"`
+	Type    string                       `yaml:"type"`
+	Method  string                       `yaml:"method"`
+	Call    string                       `yaml:"call"`
 }
 
 func ReadApisYaml() (map[string]map[string]ApiSettings, error) {
@@ -41,6 +42,10 @@ func validateApis(groups map[string]map[string]ApiSettings) error {
 		for key, api := range group {
 			if api.Method == "" {
 				return errors.New(fmt.Sprintf("There's no method in api: %s. Method is required in apis.yaml", key))
+			}
+
+			if strings.ToLower(api.Type) != "custom" && strings.ToLower(api.Type) != "postgresql" {
+				return errors.New(fmt.Sprintf("Unsupported type %s", api.Type))
 			}
 		}
 	}

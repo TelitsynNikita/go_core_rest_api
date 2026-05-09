@@ -31,7 +31,7 @@ func NewDBConnection(config DBConfig) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	if err := dbConnect.Ping(); err != nil {
+	if err = dbConnect.Ping(); err != nil {
 		return nil, err
 	}
 

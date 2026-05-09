@@ -1,23 +1,26 @@
 user:
   get-users:
+    type: "postgresql"
     method: post
-    sql_function: "get_users"
+    call: "get_users"
     body:
 
-    create-user:
-      method: post
-      sql_function: "create_user"
-      body:
-        email:
-          type: string
-          tag: 'required,gt=3,lte=50'
-        password:
-          type: string
-          tag: 'required,gt=8,lte=200'
+  create-user:
+    type: postgresql
+    method: post
+    call: "create_user"
+    body:
+      email:
+        type: string
+        tag: 'required,gt=3,lte=50'
+      password:
+        type: string
+        tag: 'required,gt=8,lte=200'
 
   sign-up:
+    type: postgresql
     method: post
-    sql_function: "get_users"
+    call: "get_users"
     body:
       name:
         type: string
@@ -35,16 +38,19 @@ user:
         type: string
         tag: 'required,gt=8,lte=200'
 
-  log-out:
-    method: post
-    custom: true
-
   test:
+    type: custom
     method: post
+    call: TestFunction
     is_slice: true
-    sql_function: ""
     body:
-      name:
+      email:
         type: string
-        is_slice: true
-        tag: 'required,gt=1,lte=50'
+        tag: 'required,gt=3,lte=50'
+
+api:
+  get-all-cs-equipment:
+    type: postgresql
+    method: get
+    call: "equipment.get_all_cs_equipment"
+    body:
