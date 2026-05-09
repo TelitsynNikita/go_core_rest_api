@@ -54,3 +54,36 @@ api:
     method: get
     call: "equipment.get_all_cs_equipment"
     body:
+
+  add-cs-equipment:
+    type: postgresql
+    method: post
+    call: "equipment.add_cs_equipment"
+    body:
+      name:
+        type: string
+        tag: 'required,gt=0,lte=100'
+      description:
+        type: string
+        tag: 'required,gt=0,lte=500'
+      type:
+        type: string
+        tag: 'required,oneof=pistol rifle glove knife shotgun submachine_gun sniper machine_gun container sticker keychain agent equipment'
+
+  update-cs-equipment:
+    type: postgresql
+    method: post
+    call: "equipment.update_cs_equipment"
+    body:
+      id:
+        type: int64
+        tag: 'required'
+      name:
+        type: string
+        tag: 'required,gt=0,lte=100'
+      description:
+        type: string
+        tag: 'required,gt=0,lte=500'
+      type:
+        type: string
+        tag: 'required,oneof=pistol rifle glove knife shotgun submachine_gun sniper machine_gun container sticker keychain agent equipment'
