@@ -61,9 +61,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			return c.JSON(fiber.Map{
-				"res": result,
-			})
+			return c.JSON(result)
 		})
 	}
 }
