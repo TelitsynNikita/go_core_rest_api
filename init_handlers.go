@@ -94,6 +94,8 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 
 			return c.JSON(result)
 		})
+	default:
+		panic(fmt.Sprintf("Unsupported method: %s", apiSetting.Method))
 	}
 }
 
