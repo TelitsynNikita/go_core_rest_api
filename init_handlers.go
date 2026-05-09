@@ -222,8 +222,6 @@ func parseBody(bodySettings map[string]map[string]string, bodyBytes []byte, isSl
 		// Создаем экземпляр новой структуры
 		extendedValue := reflect.New(extendedType).Elem()
 
-		fmt.Println(extendedValue)
-
 		for key, value := range unmarshalledBody {
 			fieldOfCustomStructValue := extendedValue.FieldByName(strings.ToUpper(key[:1]) + key[1:])
 			if fieldOfCustomStructValue.IsValid() {
