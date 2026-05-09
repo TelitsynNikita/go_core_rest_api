@@ -35,7 +35,8 @@ func InitServerApp(groups map[string]map[string]ApiSettings, config Config, db *
 }
 
 func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *Database) {
-	if strings.ToLower(apiSetting.Method) == strings.ToLower(fiber.MethodGet) {
+	switch strings.ToLower(apiSetting.Method) {
+	case strings.ToLower(fiber.MethodGet):
 		apiGroup.Get(url, func(c *fiber.Ctx) error {
 			result, err := db.SelectFunction(apiSetting.Call, nil)
 			if err != nil {
@@ -45,8 +46,40 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 
 			return c.JSON(result)
 		})
-	} else if strings.ToLower(apiSetting.Method) == strings.ToLower(fiber.MethodPost) {
+	case strings.ToLower(fiber.MethodPost):
 		apiGroup.Post(url, func(c *fiber.Ctx) error {
+			body, err := parseBody(apiSetting.Body, c.Body(), apiSetting.IsSlice)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+
+			result, err := db.SelectFunction(apiSetting.Call, body)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+
+			return c.JSON(result)
+		})
+	case strings.ToLower(fiber.MethodPut):
+		apiGroup.Put(url, func(c *fiber.Ctx) error {
+			body, err := parseBody(apiSetting.Body, c.Body(), apiSetting.IsSlice)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+
+			result, err := db.SelectFunction(apiSetting.Call, body)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+
+			return c.JSON(result)
+		})
+	case strings.ToLower(fiber.MethodDelete):
+		apiGroup.Delete(url, func(c *fiber.Ctx) error {
 			body, err := parseBody(apiSetting.Body, c.Body(), apiSetting.IsSlice)
 			if err != nil {
 				logrus.Error(err)
