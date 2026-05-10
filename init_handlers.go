@@ -38,7 +38,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 	switch strings.ToLower(apiSetting.Method) {
 	case strings.ToLower(fiber.MethodGet):
 		apiGroup.Get(url, func(c *fiber.Ctx) error {
-			result, err := db.SelectFunction(apiSetting.Call, nil)
+			result, err := db.SelectFunction(c.UserContext(), apiSetting.Call, nil)
 			if err != nil {
 				logrus.Error(err)
 				return err
@@ -54,7 +54,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			result, err := db.SelectFunction(apiSetting.Call, body)
+			result, err := db.SelectFunction(c.UserContext(), apiSetting.Call, body)
 			if err != nil {
 				logrus.Error(err)
 				return err
@@ -70,7 +70,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			result, err := db.SelectFunction(apiSetting.Call, body)
+			result, err := db.SelectFunction(c.UserContext(), apiSetting.Call, body)
 			if err != nil {
 				logrus.Error(err)
 				return err
@@ -86,7 +86,7 @@ func makeHandler(url string, apiSetting ApiSettings, apiGroup fiber.Router, db *
 				return err
 			}
 
-			result, err := db.SelectFunction(apiSetting.Call, body)
+			result, err := db.SelectFunction(c.UserContext(), apiSetting.Call, body)
 			if err != nil {
 				logrus.Error(err)
 				return err
