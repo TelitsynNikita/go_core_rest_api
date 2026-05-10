@@ -26,7 +26,7 @@ type DBConfig struct {
 }
 
 type Database struct {
-	sqlx *sqlx.DB
+	SQLX *sqlx.DB
 }
 
 func NewDatabase() *Database {
@@ -86,10 +86,10 @@ func (db *Database) SelectFunction(ctx context.Context, functionName string, bod
 
 	if body == nil {
 		query := fmt.Sprintf("SELECT %s()", functionName)
-		err = db.sqlx.QueryRowContext(ctx, query).Scan(&result)
+		err = db.SQLX.QueryRowContext(ctx, query).Scan(&result)
 	} else {
 		query := fmt.Sprintf("SELECT %s($1)", functionName)
-		err = db.sqlx.QueryRowContext(ctx, query, string(body)).Scan(&result)
+		err = db.SQLX.QueryRowContext(ctx, query, string(body)).Scan(&result)
 	}
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package go_core_rest_api
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
@@ -19,18 +20,27 @@ func NewApiService() *ApiService {
 	return &ApiService{}
 }
 
-func (a *ApiService) InitCustomHandler(key string, fn func(db *Database)) {
+func (a *ApiService) InitCustomHandler(group, url, method string, fn func(c *fiber.Ctx) error) {
+	switch strings.ToUpper(method) {
+	case fiber.MethodGet,
+		fiber.MethodPost,
+		fiber.MethodPut,
+		fiber.MethodDelete:
+	default:
+		panic("Unsupported http method: " + method)
+	}
 
+	a.Server.Add(strings.ToUpper(method), fmt.Sprintf("%s/%s", group, url), fn)
 }
 
 func (a *ApiService) InitApiService() {
 	a.initConfigs()
 	a.initApisYaml()
-	a.initDB(a.Config.DBConfig)
+	a.initDB()
+	a.initServer(&a.DB)
 }
 
 func (a *ApiService) RunService() error {
-	a.initServer(&a.DB)
 	return a.Server.Listen(fmt.Sprintf(":%s", a.Config.ServerConfig.Port))
 }
 
@@ -52,14 +62,14 @@ func (a *ApiService) initApisYaml() {
 	a.YamlConfig = yamlConfig
 }
 
-func (a *ApiService) initDB(config DBConfig) {
+func (a *ApiService) initDB() {
 	db := NewDatabase()
-	sqlx, err := NewDBConnection(config)
+	sqlx, err := NewDBConnection(a.Config.DBConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	db.sqlx = sqlx
+	db.SQLX = sqlx
 	a.DB = *db
 }
 
